@@ -1,6 +1,6 @@
-{"username": "user1", "age": 25, "fullname": "James Brown"}
-{"username": "user2", "age": 35, "fullname": "Alice Jameson"}
-{"username": "user3", "age": 40, "fullname": "James Smith"}
-{"username": "user4", "age": 65, "fullname": "James Brown"}
-{"username": "user5", "age": 75, "fullname": "Alice Jameson"}
-{"username": "user6", "age": 80, "fullname": "James Smith"}
+{"username": "user1", "age": 25, "fullname": "James Brown","status":true,"ent_dt":"2024-09-01 09:00:00"}
+{"username": "user2", "age": 35, "fullname": "Alice Jameson","status":true,"ent_dt":"2024-09-01 11:00:00"}
+{"username": "user3", "age": 40, "fullname": "James Smith","status":false,"ent_dt":"2024-09-03 09:00:00"}
+{"username": "user4", "age": 65, "fullname": "James Brown","status":true,"ent_dt":"2024-09-06 09:00:00"}
+{"username": "user5", "age": 75, "fullname": "Alice Jameson","status":false,"ent_dt":"2024-09-05 09:00:00"}
+{"username": "user6", "age": 80, "fullname": "James Smith","status":true,"ent_dt":"2024-09-06 09:00:00"}

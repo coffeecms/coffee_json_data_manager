@@ -2,123 +2,106 @@
 
 ## Overview
 
-JSON Data Manager is a Go library designed to efficiently manage and filter JSON data from files. It provides functionalities to:
-- Load JSON data from a file.
-- Automatically reload the file at regular intervals.
-- Filter data based on dynamic conditions.
-- Optimize Go runtime settings for performance.
+The JSON Data Manager is a flexible and efficient tool designed to manage, filter, and process JSON data. It supports two modes of operation: "InMemory" and "Split". The system can handle various data types including `int`, `string`, `datetime`, `date`, and `bool`. It also provides robust memory management and concurrency features to handle large datasets.
 
 ## Features
 
-- **Load JSON Data**: Load data from a JSON file and organize it by a specified key.
-- **Auto-Reload**: Automatically reload data from the file every 5 seconds.
-- **Dynamic Filtering**: Filter JSON data based on customizable conditions.
-- **Runtime Optimization**: Optimize Go runtime settings for improved performance.
+- **Modes of Operation**:
+  - **InMemory**: Loads the entire JSON file into memory, creates an index for optimized searches, and applies filter conditions.
+  - **Split**: Reads the JSON file in chunks, applies filter conditions on each chunk, and processes data efficiently without loading the entire file into memory.
+
+- **Data Types Supported**:
+  - **Integer**: Supports comparison operators such as `>`, `<`, `>=`, `<=`, `==`.
+  - **String**: Supports equality check (`==`) and substring search (`contains`).
+  - **Datetime**: Uses the format `yyyy-MM-dd HH:mm:ss`. Supports comparison operators such as `>`, `<`, `>=`, `<=`, `==`.
+  - **Date**: Uses the format `yyyy-MM-dd`. Supports comparison operators such as `>`, `<`, `>=`, `<=`, `==`.
+  - **Boolean**: Supports equality check (`==`).
+
+- **Memory Management**:
+  - Limits memory usage based on user-defined settings (default: 2GB).
+  - Efficient memory tracking and error handling to avoid exceeding memory limits.
+
+- **Concurrency**:
+  - Utilizes all CPU cores with Goroutines for efficient data processing and filtering.
+  - Handles concurrent operations using `sync.WaitGroup`.
 
 ## Installation
 
-To use this library, you need to have Go installed on your machine. You can then include this package in your project by cloning this repository or importing it as a module.
+1. Ensure you have Go installed. You can download it from [golang.org](https://golang.org/dl/).
 
-```sh
-git clone https://github.com/coffeecms/coffee_json_data_manager.git
-```
+2. Clone this repository:
+   ```bash
+   git clone https://github.com/coffeecms/coffee_json_data_manager.git
+   ```
+
+3. Navigate to the project directory:
+   ```bash
+   cd coffee_json_filter
+   ```
+
+4. Build the project:
+   ```bash
+   go build -o coffee_json_filter
+   ```
 
 ## Usage
 
-### 1. Importing the Package
+### Configuration
 
-Import the package into your Go file:
+Before running the program, you need to configure the `DataManager` instance and set the mode of operation. Modify the `main()` function in `main.go` to suit your needs.
 
-```go
-import (
-    "log"
-    "time"
-    "github.com/coffeecms/coffee_json_data_manager"
-)
-```
+### Running the Program
 
-### 2. Creating an Instance
+1. Place your JSON data file (e.g., `users.json`) in the project directory.
 
-Create an instance of `DataManager`:
+2. Update the `main()` function in `main.go` with the appropriate file path and filter conditions.
 
-```go
-dataManager := coffee_json_filter.NewDataManager()
-```
-
-### 3. Loading Data
-
-Load data from a JSON file and specify the key name used for organizing the data:
-
-```go
-err := dataManager.LoadData("users.json", "username")
-if err != nil {
-    log.Fatal(err)
-}
-```
-
-### 4. Auto-Reload
-
-Set up auto-reload to refresh the data every 5 seconds:
-
-```go
-dataManager.AutoReload("users.json", "username")
-```
-
-### 5. Filtering Data
-
-Define filtering conditions and apply them to the data:
-
-```go
-conditions := []coffee_json_filter.FilterCondition{
-    {Key: "age", ValueType: "int", Operator: ">", Value: 30},
-    {Key: "fullname", ValueType: "string", Operator: "contains", Value: "James"},
-}
-
-filteredUsers := dataManager.FilterDataByConditions(conditions)
-log.Println("Filtered Users:", filteredUsers)
-```
+3. Run the program:
+   ```bash
+   ./coffee_json_filter
+   ```
 
 ### Example
 
-Assume you have a file `users.json` with the following content:
-
-```json
-{"username": "user1", "age": 25, "fullname": "James Brown"}
-{"username": "user2", "age": 35, "fullname": "Alice Jameson"}
-{"username": "user3", "age": 40, "fullname": "James Smith"}
-```
-
-With the above configuration, the `FilterDataByConditions` function will return:
+#### Configuration for `InMemory` Mode
 
 ```go
-[
-    {"username": "user2", "age": 35, "fullname": "Alice Jameson"},
-    {"username": "user3", "age": 40, "fullname": "James Smith"}
-]
+dataManager := NewDataManager(2*1024*1024*1024, "InMemory") // 2GB RAM limit
 ```
 
-## Integration into Other Systems
+#### Configuration for `Split` Mode
 
-You can integrate this library into other systems by:
+```go
+dataManager := NewDataManager(2*1024*1024*1024, "Split") // 2GB RAM limit
+```
 
-1. **Incorporating it as a Module**: Include this library in your Go project using `go get` or by cloning it and importing it.
+#### Filter Conditions
 
-2. **Custom Data Sources**: Modify the `LoadData` function to work with different data sources or formats if needed.
+```go
+conditions := []FilterCondition{
+    {Key: "age", ValueType: "int", Operator: ">", Value: 30},
+    {Key: "fullname", ValueType: "string", Operator: "contains", Value: "James"},
+    {Key: "created_at", ValueType: "datetime", Operator: ">", Value: "2024-01-01 00:00:00"},
+    {Key: "birthday", ValueType: "date", Operator: "<", Value: "2000-01-01"},
+    {Key: "active", ValueType: "bool", Operator: "==", Value: true},
+}
+```
 
-3. **Advanced Filtering**: Customize the filtering logic based on specific requirements of your application, including adding new operators or value types.
+### Notes
 
-4. **Runtime Configuration**: Utilize the `OptimizeGoRuntime` function to tailor Go runtime settings according to the needs of your system for better performance.
+- Ensure the JSON file is properly formatted and contains the expected fields.
+- The date and datetime formats must match the specified formats for accurate parsing and comparison.
+- Adjust memory limits (`maxRAMUsage`) and file paths according to your requirements.
 
 ## Contributing
 
-Feel free to contribute to this project by submitting issues, creating pull requests, or suggesting improvements. Please make sure to follow the contribution guidelines provided in the repository.
+Contributions are welcome! Please fork the repository and submit a pull request with your changes. For bug reports and feature requests, open an issue on GitHub.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
-For any questions or support, please reach out to [lowlevelforest@gmail.com](mailto:lowlevelforest@gmail.com).
+For any questions or further information, please contact [lowlevelforest@gmail.com](mailto:lowlevelforest@gmail.com).
 
-```
